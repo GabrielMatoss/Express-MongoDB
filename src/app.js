@@ -1,31 +1,28 @@
 import express from "express";
+import connectToDataBase from "./config/dbConnect.js";
+import book from "./models/Book.js";
+
+const objconnection = await connectToDataBase();
+
+objconnection.on("error", (erro) => {
+    console.error("Erro de conexão", erro);
+});
+
+objconnection.once("open", () => {
+    console.log("Connection to the database successful");
+});
 
 const app = express();
 app.use(express.json());
 
-const books = [
-    {
-        id: 1,
-        title: "O Senhor dos Anéis"
-    },
-    {
-        id: 2,
-        title: "O Hobbit"
-    }
-];
-
-    function searchBook(id) {
-        return books.findIndex((book) => {
-            return book.id === Number(id);
-        });
-    }
 
 app.get("/", (req, res) => {
     res.status(200).send("Curso de Node.JS");
 });
 
-app.get("/books", (req, res) => {
-    res.status(200).json(books);
+app.get("/books", async(req, res) => {
+    const bookList = await book.find({});
+    res.status(200).json(bookList);
 });
 
 app.get("/books/:id", (req, res) => {
@@ -52,4 +49,3 @@ app.delete("/books/:id", (req, res) => {
 
 export default app;
 
-//mongodb+srv://GmAdmin:@cluster0.vyhg8fe.mongodb.net/?retryWrites=true&w=majority
