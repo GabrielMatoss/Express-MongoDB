@@ -1,23 +1,20 @@
 import express from "express";
 import connectToDataBase from "./config/dbConnect.js";
+import routes from "./routes/index.js";
 
 const objconnection = await connectToDataBase();
 
-objconnection.on("error", (erro) => {
-    console.error("Erro de conexão", erro);
+objconnection.on("error", (error) => {
+    console.error("Connection error", error);
 });
 
 objconnection.once("open", () => {
-    console.log("Connection to the database successful");
+    console.log("connection to the database successful");
 });
 
 const app = express();
-app.use(express.json());
+routes(app);
 
-
-app.get("/", (req, res) => {
-    res.status(200).send("Curso de Node.JS");
-});
 
 app.get("/books/:id", (req, res) => {
     const index = searchBook(req.params.id);
