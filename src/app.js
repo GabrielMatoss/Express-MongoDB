@@ -1,6 +1,5 @@
 import express from "express";
 import connectToDataBase from "./config/dbConnect.js";
-import book from "./models/Book.js";
 
 const objconnection = await connectToDataBase();
 
@@ -18,11 +17,6 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
     res.status(200).send("Curso de Node.JS");
-});
-
-app.get("/books", async(req, res) => {
-    const bookList = await book.find({});
-    res.status(200).json(bookList);
 });
 
 app.get("/books/:id", (req, res) => {
