@@ -1,3 +1,4 @@
+import { author } from "../models/Author.js";
 import book from "../models/Book.js"
 
 class BookController {
@@ -22,10 +23,12 @@ class BookController {
     };
 
     static async registerBook (req, res) {
+        const newBook = req.body;
         try {
-            const newBook = await book.create(req.body);
-            console.log(newBook);
-            res.status(201).json({ message: "successfully created", book: newBook });
+            const authorFound = await author.findById(newBook.author);
+            const completeBook = { ...newBook, author: { ...authorFound._doc }};
+            const bookCreated = await book.create(completeBook);
+            res.status(201).json({ message: "successfully created", book: bookCreated });
         } catch (error) {
             res.status(500).json({ message: `${error.message} - failure to register a new book` });
         }
@@ -48,6 +51,16 @@ class BookController {
             res.status(200).json({ message: "book deleted successfully" });            
         } catch (error) {
             res.status(500).json({ message: `${error.message} - book delete failure` });
+        }
+    };
+
+    static async listBookByPublisher (req, res) {
+        const publishing = req.query.publishing;
+        try {
+            const booksByPublisher = await book.find({ publishing_company: publishing });
+            res.status(200).json(booksByPublisher);
+        } catch (error) {
+            res.status(500).json({ message: `${error.message} - search failure` });
         }
     };
 };
