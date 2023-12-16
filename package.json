@@ -14,7 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.56.0"
   },
   "config": {
     "commitizen": {
