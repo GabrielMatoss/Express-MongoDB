@@ -1,18 +1,17 @@
-import mongoose from "mongoose";
 import { author } from "../models/Author.js";
 
 class AuthorController {
 
-	static async listAuthors (req, res) {
+	static async listAuthors (req, res, next) {
 		try {
 			const authorList = await author.find({});
 			res.status(200).json(authorList);            
 		} catch (error) {
-			res.status(500).json({ message: `${error.message} - request failure` });
+			next(error);
 		}
 	}
     
-	static async listAuthorsById (req, res) {
+	static async listAuthorsById (req, res, next) {
 		try {
 			const id = req.params.id;
 			const authorFound = await author.findById(id);
@@ -24,40 +23,36 @@ class AuthorController {
 			}
 			
 		} catch (error) {
-			if (error instanceof mongoose.Error.CastError) {
-				res.status(400).json({ message: "one or more data provided is incorrect" });
-			} else {
-				res.status(500).json({ message: "internal server error" });
-			}
+			next(error);
 		}
 	}
 
-	static async registerAuthor (req, res) {
+	static async registerAuthor (req, res, next) {
 		try {
 			const newAuthor = await author.create(req.body);
 			res.status(201).json({ message: "successfully created", author: newAuthor });
 		} catch (error) {
-			res.status(500).json({ message: `${error.message} - failure to register a new author` });
+			next(error);
 		}
 	}
 
-	static async updateAuthor (req, res) {
+	static async updateAuthor (req, res, next) {
 		try {
 			const id = req.params.id;
 			await author.findByIdAndUpdate(id, req.body);
 			res.status(200).json({ message: "updated author" });            
 		} catch (error) {
-			res.status(500).json({ message: `${error.message} - author update failure` });
+			next(error);
 		}
 	}
 
-	static async deleteAuthor (req, res) {
+	static async deleteAuthor (req, res, next) {
 		try {
 			const id = req.params.id;
 			await author.findByIdAndDelete(id);
 			res.status(200).json({ message: "author deleted successfully" });            
 		} catch (error) {
-			res.status(500).json({ message: `${error.message} - author delete failure` });
+			next(error);
 		}
 	}
 }

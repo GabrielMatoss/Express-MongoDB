@@ -1,6 +1,7 @@
 import express from "express";
 import connectToDataBase from "./config/dbConnect.js";
 import routes from "./routes/index.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const objconnection = await connectToDataBase();
 
@@ -14,6 +15,10 @@ objconnection.once("open", () => {
 
 const app = express();
 routes(app);
+
+
+
+app.use(errorHandler);
 
 export default app;
 
