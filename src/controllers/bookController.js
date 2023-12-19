@@ -1,11 +1,12 @@
-import { author } from "../models/Author.js";
 import book from "../models/Book.js";
 
 class BookController {
 
 	static async listBooks (req, res, next) {
 		try {
-			const bookList = await book.find({});
+			const bookList = await book.find()
+				.populate("author")
+				.exec();
 			res.status(200).json(bookList);            
 		} catch (error) {
 			next(error);
@@ -15,7 +16,9 @@ class BookController {
 	static async listBooksById (req, res, next) {
 		try {
 			const id = req.params.id;
-			const bookFound = await book.findById(id);
+			const bookFound = await book.findById(id)
+				.populate("author", "name")
+				.exec();
 			res.status(200).json(bookFound);            
 		} catch (error) {
 			next(error);
@@ -23,12 +26,10 @@ class BookController {
 	}
 
 	static async registerBook (req, res, next) {
-		const newBook = req.body;
 		try {
-			const authorFound = await author.findById(newBook.author);
-			const completeBook = { ...newBook, author: { ...authorFound._doc }};
-			const bookCreated = await book.create(completeBook);
-			res.status(201).json({ message: "successfully created", book: bookCreated });
+			let newBook = new book(req.body);
+			const bookResult = await newBook.save();
+			res.status(201).json(bookResult);
 		} catch (error) {
 			next(error);
 		}
@@ -37,7 +38,7 @@ class BookController {
 	static async updateBook (req, res, next) {
 		try {
 			const id = req.params.id;
-			await book.findByIdAndUpdate(id, req.body);
+			await book.findByIdAndUpdate(id, { $set: req.body });
 			res.status(200).json({ message: "updated book" });            
 		} catch (error) {
 			next(error);

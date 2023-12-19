@@ -16,8 +16,6 @@ objconnection.once("open", () => {
 const app = express();
 routes(app);
 
-
-
 app.use(errorHandler);
 
 export default app;
