@@ -2,14 +2,29 @@ import mongoose from "mongoose";
 
 const bookSchema = new mongoose.Schema({
 	id: { type: mongoose.Schema.Types.ObjectId },
-	title: { type: String, required: [true, "book title is required"] },
-	publishing_company: { type: String },
-	price: { type: Number },
-	pages: { type: Number },
+	title: { type: String, required: [true, "O título do livro é obrigatório"] },
+	publishing_company: {
+		type: String,
+		required: [true, "A editora é obrigatória"],
+		enum: {
+			values: ["Classics", "Casa do código", "Alura"],
+			message: "A editora {VALUE} não é um valor permitido. Editoras permitidas: Classics, Casa do código, Alura."
+		}
+	},
+	price: {
+		type: Number,
+		min: [10, "O preço do livro deve estar entre 10 e 5000 reais. Valor fornecido: {VALUE}"],
+		max: [5000, "O preço do livro deve estar entre 10 e 5000 reais. Valor fornecido: {VALUE}"] 
+	},
+	pages: {
+		type: Number,
+		min: [10, "O número de páginas deve estar entre 10 e 5000. Valor fornecido: {VALUE}"],
+		max: [5000, "O número de páginas deve estar entre 10 e 5000. Valor fornecido: {VALUE}"] 
+	},
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "authors",
-		required: [true, "author name is required"]
+		required: [true, "O(a) autor(a) é obrigatório"]
 	}
 }, { versionKey: false });
 

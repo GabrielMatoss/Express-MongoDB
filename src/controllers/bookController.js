@@ -23,7 +23,7 @@ class BookController {
 			if (bookFound !== null) {
 				res.status(200).json(bookFound);            
 			} else {
-				next(new NotFound("book id not found"));
+				next(new NotFound("Id do livro não encontrado."));
 			}
 			
 		} catch (error) {
@@ -47,9 +47,9 @@ class BookController {
 			const bookFound = await book.findByIdAndUpdate(id, { $set: req.body });
 
 			if (bookFound !== null) {
-				res.status(200).json({ message: "updated book" });            
+				res.status(200).json({ message: "Livro atualizado com sucesso" });            
 			} else {
-				next(new NotFound("book id not found to be updated"));
+				next(new NotFound("Id do livro não encontrado."));
 			}
 		} catch (error) {
 			next(error);
@@ -61,9 +61,9 @@ class BookController {
 			const id = req.params.id;
 			const bookFound = await book.findByIdAndDelete(id);
 			if (bookFound !== null) {
-				res.status(200).json({ message: "book deleted successfully" });            
+				res.status(200).json({ message: "Livro excluído com sucesso" });            
 			} else {
-				next(new NotFound("book id not found to be deleted"));
+				next(new NotFound("Id do livro não encontrado."));
 			}
 		} catch (error) {
 			next(error);
@@ -78,7 +78,7 @@ class BookController {
 			if(booksByPublisher.length !== 0) {
 				res.status(200).json(booksByPublisher);
 			} else {
-				next(new NotFound("publisher not found"));
+				next(new NotFound("Editora não encontrada."));
 			}
 			
 		} catch (error) {

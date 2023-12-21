@@ -1,7 +1,7 @@
 import BaseError from "./BaseError.js";
 
 class NotFound extends BaseError {
-	constructor(message = "page not found") {
+	constructor(message = "Página não encontrada") {
 		super(message, 404);
 	}
 }

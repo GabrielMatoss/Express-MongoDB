@@ -19,7 +19,7 @@ class AuthorController {
 			if (authorFound !== null) {
 				res.status(200).json(authorFound);
 			} else {
-				next(new NotFound("id author not found"));
+				next(new NotFound("Id do autor não encontrado."));
 			}
 
 		} catch (error) {
@@ -43,9 +43,9 @@ class AuthorController {
 			const authorFound = await author.findByIdAndUpdate(id, { $set: req.body });
 
 			if (authorFound !== null) {
-				res.status(200).json({ message: "updated author" });  
+				res.status(200).json({ message: "Autor atualizado." });  
 			} else {
-				next(new NotFound("author id could not be found to be updated"));
+				next(new NotFound("Id do autor não encontrado."));
 			}
 			
 		} catch (error) {
@@ -59,9 +59,9 @@ class AuthorController {
 			const authorFound = await author.findByIdAndDelete(id);
 
 			if (authorFound !== null) {
-				res.status(200).json({ message: "author deleted successfully" });    
+				res.status(200).json({ message: "Autor excluído com sucesso." });    
 			} else {
-				next(new NotFound("author id could not be found to be deleted"));
+				next(new NotFound("Id do autor não encontrado."));
 			}
 			
 		} catch (error) {

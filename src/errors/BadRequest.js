@@ -1,7 +1,7 @@
 import BaseError from "./BaseError.js";
 
 class BadRequest extends BaseError {
-	constructor(message = "one or more data provided is incorrect") {
+	constructor(message = "Um ou mais dados fornecidos estão incorretos") {
 		super(message, 400);
 	}
 }

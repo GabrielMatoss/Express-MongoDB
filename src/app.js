@@ -11,7 +11,7 @@ objconnection.on("error", (error) => {
 });
 
 objconnection.once("open", () => {
-	console.log("connection to the database successful");
+	console.log("Connection to the database successful");
 });
 
 const app = express();
