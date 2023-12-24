@@ -70,13 +70,18 @@ class BookController {
 		}
 	}
 
-	static async listBookByPublisher (req, res, next) {
-		const publishing = req.query.publishing;
+	static async listBookByFilter (req, res, next) {
 		try {
-			const booksByPublisher = await book.find({ publishing_company: publishing });
+			const { publisher, title } = req.query;
+			const searchQuery = {};
 
-			if(booksByPublisher.length !== 0) {
-				res.status(200).json(booksByPublisher);
+			if (publisher) searchQuery.publisher = publisher;
+			if (title) searchQuery.title = title;
+
+			const booksByFilter = await book.find(searchQuery);
+
+			if(booksByFilter.length !== 0) {
+				res.status(200).json(booksByFilter);
 			} else {
 				next(new NotFound("Editora não encontrada."));
 			}
