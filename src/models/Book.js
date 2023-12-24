@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const bookSchema = new mongoose.Schema({
 	id: { type: mongoose.Schema.Types.ObjectId },
 	title: { type: String, required: [true, "O título do livro é obrigatório"] },
-	publishing_company: {
+	publisher: {
 		type: String,
 		required: [true, "A editora é obrigatória"],
 		enum: {
