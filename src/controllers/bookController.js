@@ -1,5 +1,5 @@
 import NotFound from "../errors/NotFound.js";
-import { book } from "../models/index.js";
+import { authors, book } from "../models/index.js";
 
 class BookController {
 
@@ -72,14 +72,13 @@ class BookController {
 
 	static async listBookByFilter (req, res, next) {
 		try {
-			const searchQuery = searchProcess(req.query);
+			const searchQuery = await searchProcess(req.query);
 
-			const booksByFilter = await book.find(searchQuery);
-
-			if(booksByFilter.length !== 0) {
+			if (searchQuery !== null) {
+				const booksByFilter = await book.find(searchQuery).populate("author");				
 				res.status(200).json(booksByFilter);
 			} else {
-				next(new NotFound("Editora não encontrada."));
+				res.status(200).send([]);
 			}
 			
 		} catch (error) {
@@ -88,17 +87,27 @@ class BookController {
 	}
 }
 
-function searchProcess(params) {
-	const { publisher, title, minPages, maxPages } = params;
-	const search = {};
+async function searchProcess(params) {
+	const { publisher, title, minPages, maxPages, authorName } = params;
+	let search = {};
 
 	if (publisher) search.publisher = publisher;
 	if (title) search.title = { $regex: title, $options: "i" };
 
-	if(minPages || maxPages) search.pages = {};
+	if (minPages || maxPages) search.pages = {};
 
-	if(minPages) search.pages.$gte = minPages;
-	if(maxPages) search.pages.$lte = maxPages;
+	if (minPages) search.pages.$gte = minPages;
+	if (maxPages) search.pages.$lte = maxPages;
+
+	if (authorName) {
+		const author = await authors.findOne({ name: authorName });
+
+		if (author !== null) {
+			search.author = author._id;
+		} else {
+			search = null;
+		}
+	}
 
 	return search;
 }
