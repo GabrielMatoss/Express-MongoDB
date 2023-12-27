@@ -6,14 +6,16 @@ class BookController {
 
 	static async listBooks (req, res, next) {
 		try {
-
-			let { limit = 5, page = 1} = req.query; 
+			let { limit = 5, page = 1, sorting = "_id:-1" } = req.query; 
+			let [fieldSorting, order] = sorting.split(":");
 
 			limit = parseInt(limit);
 			page = parseInt(page);
+			order = parseInt(order);
 
 			if (limit > 0 && page > 0) {
 				const bookList = await book.find()
+					.sort({ [fieldSorting]: order })
 					.skip((page - 1) * limit)
 					.limit(limit)
 					.populate("author")
