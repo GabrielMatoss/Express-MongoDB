@@ -1,30 +1,13 @@
 import NotFound from "../errors/NotFound.js";
-import BadRequest from "../errors/BadRequest.js";
 import { authors, book } from "../models/index.js";
 
 class BookController {
 
 	static async listBooks (req, res, next) {
 		try {
-			let { limit = 5, page = 1, sorting = "_id:-1" } = req.query; 
-			let [fieldSorting, order] = sorting.split(":");
-
-			limit = parseInt(limit);
-			page = parseInt(page);
-			order = parseInt(order);
-
-			if (limit > 0 && page > 0) {
-				const bookList = await book.find()
-					.sort({ [fieldSorting]: order })
-					.skip((page - 1) * limit)
-					.limit(limit)
-					.populate("author")
-					.exec();
-				res.status(200).json(bookList);
-			} else {
-				next(new BadRequest());
-			}
-            
+			const searchBooks = book.find();
+			req.result = searchBooks;
+			next();
 		} catch (error) {
 			next(error);
 		}
@@ -33,9 +16,8 @@ class BookController {
 	static async listBooksById (req, res, next) {
 		try {
 			const id = req.params.id;
-			const bookFound = await book.findById(id)
-				.populate("author", "name")
-				.exec();
+			const bookFound = await book.findById(id, {}, { autopopulate: false })
+				.populate("author");
 			if (bookFound !== null) {
 				res.status(200).json(bookFound);            
 			} else {
@@ -91,8 +73,9 @@ class BookController {
 			const searchQuery = await searchProcess(req.query);
 
 			if (searchQuery !== null) {
-				const booksByFilter = await book.find(searchQuery).populate("author");				
-				res.status(200).json(booksByFilter);
+				const booksResult = book.find(searchQuery);				
+				req.result = booksResult;
+				next();
 			} else {
 				res.status(200).send([]);
 			}
